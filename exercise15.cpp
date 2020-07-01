@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 
+#define CATALOGUE_FILE "catalogue.data"
+#define PRODUCTION_FILE "production.data"
+
 using namespace std;
 
 string min_production(int matrix[][3], int cols, int rows, string namesvec[], int dim_names)
@@ -56,11 +59,11 @@ int main()
 {
     ifstream names;
     ifstream prod;
-    names.open("names.txt");
-    prod.open("production.txt");
+    names.open(CATALOGUE_FILE);
+    prod.open(PRODUCTION_FILE);
     int aux;
-    int rows = 75;
-    int col = 3;
+    const int rows = 75;
+    const int col = 3;
     int products_matrix[rows][3];
 
     for (int i = 0; i < rows; ++i)
@@ -72,8 +75,8 @@ int main()
         }
         cout << endl;
     }
-    int dim_names = 6;
-    int dim_colors = 3;
+    const int dim_names = 6;
+    const int dim_colors = 3;
     string namesvec[dim_names];
     string colorsvec[dim_colors];
     string auxword;
