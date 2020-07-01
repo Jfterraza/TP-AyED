@@ -1,117 +1,154 @@
 #include <iostream>
+#include <cassert>
 #include <fstream>
 
 #define CATALOGUE_FILE "catalogue.data"
 #define PRODUCTION_FILE "production.data"
 
+#define PRODUCTS    6
+#define COLOURS     3
+#define COLS        COLOURS
+
+#define ERROR -1
+//#define NDEBUG 1
+
 using namespace std;
 
-string min_production(int matrix[][3], int cols, int rows, string namesvec[], int dim_names)
+int
+catalogue_read(string file_name, string buff[], unsigned const int size)
 {
-    int sum0 = 0, sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0, sum5 = 0;
-    for (int i = 0; i < rows; ++i)
-    {
-        int prd = matrix[i][0];
-        switch (prd)
-        {
-        case 0:
-            sum0 += matrix[i][2];
-            break;
-        case 1:
-            sum1 += matrix[i][2];
-            break;
-        case 2:
-            sum2 += matrix[i][2];
-            break;
-        case 3:
-            sum3 += matrix[i][2];
-            break;
-        case 4:
-            sum4 += matrix[i][2];
-            break;
-        case 5:
-            sum5 += matrix[i][2];
-            break;
-        }
-    }
-    int sums[6];
-    sums[0] = sum0;
-    sums[1] = sum1;
-    sums[2] = sum2;
-    sums[3] = sum3;
-    sums[4] = sum4;
-    sums[5] = sum5;
+    assert(buff);
 
-    int minvalue = sums[0];
-    int minindex = 0;
-    for (int i = 1; i < dim_names; ++i)
-    {
-        if (sums[i] < minvalue)
-        {
-            minvalue = sums[i];
-            minindex = i;
+    ifstream file;
+
+    file.open(file_name);
+
+    if(!file.is_open()) {
+        return ERROR;
+    }
+
+    for(unsigned int i = 0; i < size; i++) {
+        file >> buff[i];
+    }
+
+    file.close();
+    return 0;
+}
+
+int
+catalogue_create(string products_and_colours[], unsigned const int size,
+        unsigned const int products, unsigned const int colours,
+        string catalogue[][COLOURS])
+{
+    assert(catalogue);
+    assert(products_and_colours);
+
+    if (size > (colours + products)) {
+        return ERROR;
+    }
+
+    for(unsigned int i = 0; i < (products + colours); i++) {
+        if(i < products) {
+            for(unsigned int j = 0; j < colours; j++)
+                catalogue[i][j] = products_and_colours[i];
+        } else {
+            for(unsigned int j = 0; j < products; j++)
+                (catalogue[j][i-products] += " ") += products_and_colours[i];
         }
     }
-    return namesvec[minindex] + " with " + to_string(minvalue) + " units";
+
+    return 0;
+}
+
+void
+matrix_clear(int matrix[][COLS], unsigned const int rows)
+{
+    for(unsigned int i = 0; i < rows; i++)
+        for(unsigned int j = 0; j < COLS; j++)
+            matrix[i][j] = 0;
+}
+
+int
+production_read(string file_name, int production[][COLOURS], unsigned const int products)
+{
+    assert(production);
+
+    ifstream file;
+
+    file.open(file_name);
+
+    if(!file.is_open()) {
+        return ERROR;
+    }
+
+    matrix_clear(production, products);
+
+    int a, b, n;
+
+    file >> a;
+    while(!file.eof()) {
+        file >> b;
+
+        file >> n;
+        production[a][b] += n;
+
+        file >> a;
+    }
+
+    file.close();
+    return 0;
+}
+
+string
+min_production(int production[][COLOURS], string catalogue[][COLOURS],
+        unsigned const int products, unsigned const int colours)
+{
+    int min_x = 0;
+    int min_y = 0;
+
+    int min_value = production[min_x][min_y];
+
+    for(unsigned int i = 0; i < products; i++) {
+        for(unsigned int j = 0; j < colours; j++) {
+            if (production[i][j] < min_value) {
+                min_value = production[i][j];
+                min_x = i;
+                min_y = j;
+            }
+        }
+    }
+
+    return catalogue[min_x][min_y] + " with " + to_string(min_value) + " units.";
 }
 
 int main()
 {
-    ifstream names;
-    ifstream prod;
-    names.open(CATALOGUE_FILE);
-    prod.open(PRODUCTION_FILE);
-    int aux;
-    const int rows = 75;
-    const int col = 3;
-    int products_matrix[rows][3];
+    /* CATALOGUE */
+    string products_and_colours[PRODUCTS + COLOURS];
 
-    for (int i = 0; i < rows; ++i)
-    {
-        for (int j = 0; j < col; ++j)
-        {
-            prod >> aux;
-            products_matrix[i][j] = aux;
-        }
-        cout << endl;
+    if (catalogue_read(CATALOGUE_FILE, products_and_colours, PRODUCTS + COLOURS)) {
+        cout << "failed to read " << CATALOGUE_FILE << "." << endl;
+        return ERROR;
     }
-    const int dim_names = 6;
-    const int dim_colors = 3;
-    string namesvec[dim_names];
-    string colorsvec[dim_colors];
-    string auxword;
-    //rellena el nombre
-    for (int i = 0; i < dim_names; ++i)
-    {
-        names >> auxword;
-        namesvec[i] = auxword;
+
+    string catalogue[PRODUCTS][COLOURS];
+
+    if (catalogue_create(products_and_colours, PRODUCTS + COLOURS, PRODUCTS, COLOURS, catalogue)) {
+        cout << "failed to create catalogue." << endl;
+        return ERROR;
     }
-    //rellena colores
-    for (int i = 0; i < dim_colors; ++i)
-    {
-        names >> auxword;
-        colorsvec[i] = auxword;
+
+    /* PRODUCTION DATA */
+    int production[PRODUCTS][COLOURS];
+
+    if (production_read(PRODUCTION_FILE, production, PRODUCTS)) {
+        cout << "failed to read " << CATALOGUE_FILE << "." << endl;
+        return ERROR;
     }
-    // // checkeo de vectores
-    // for (int i = 0; i < dim_names; ++i)
-    // {
-    //     cout << namesvec[i] << endl;
-    // }
-    // cout << "-----------------------" << endl;
-    // for (int i = 0; i < dim_colors; ++i)
-    // {
-    //     cout << colorsvec[i] << endl;
-    // }
-    // //checkeo de la matriz
-    // cout << "-----------------------" << endl;
-    // for (int i = 0; i < rows; ++i)
-    // {
-    //     for (int j = 0; j < col; ++j)
-    //     {
-    //         cout << products_matrix[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-    cout << min_production(products_matrix, col, rows, namesvec, dim_names) << endl;
+
+    /* DATA ANALYSIS */
+    cout << "Product with the least units per lot: "
+         << min_production(production, catalogue, PRODUCTS, COLOURS) << endl;
+
     return 0;
 }
