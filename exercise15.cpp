@@ -3,52 +3,45 @@
 
 using namespace std;
 
-string min_production(int matrix[][3], int cols, int rows, string namesvec[], int dim_names)
+string min_production(int matrix[][3], int rows, string namesvec[], int dim_names)
 {
     int sum0 = 0, sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0, sum5 = 0;
+    int sums[6] {sum0, sum1, sum2, sum3, sum4, sum5};
     for (int i = 0; i < rows; ++i)
     {
         int prd = matrix[i][0];
         switch (prd)
         {
         case 0:
-            sum0 += matrix[i][2];
+            sums[0] += matrix[i][2];
             break;
         case 1:
-            sum1 += matrix[i][2];
+            sums[1] += matrix[i][2];
             break;
         case 2:
-            sum2 += matrix[i][2];
+            sums[2] += matrix[i][2];
             break;
         case 3:
-            sum3 += matrix[i][2];
+            sums[3] += matrix[i][2];
             break;
         case 4:
-            sum4 += matrix[i][2];
+            sums[4] += matrix[i][2];
             break;
         case 5:
-            sum5 += matrix[i][2];
+            sums[5] += matrix[i][2];
             break;
         }
     }
-    int sums[6];
-    sums[0] = sum0;
-    sums[1] = sum1;
-    sums[2] = sum2;
-    sums[3] = sum3;
-    sums[4] = sum4;
-    sums[5] = sum5;
-
+    
     int minvalue = sums[0];
     int minindex = 0;
-    for (int i = 1; i < dim_names; ++i)
-    {
-        if (sums[i] < minvalue)
-        {
+    for (int i = 0; i < 6; ++i){
+        if (sums[i] < minvalue){
             minvalue = sums[i];
             minindex = i;
         }
     }
+    
     return namesvec[minindex] + " with " + to_string(minvalue) + " units";
 }
 
@@ -109,6 +102,6 @@ int main()
     //     }
     //     cout << endl;
     // }
-    cout << min_production(products_matrix, col, rows, namesvec, dim_names) << endl;
+    cout << min_production(products_matrix, rows, namesvec, dim_names) << endl;
     return 0;
 }
