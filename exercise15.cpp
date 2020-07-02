@@ -69,9 +69,11 @@ matrix_clear(int matrix[][COLS], unsigned const int rows)
 }
 
 int
-production_read(string file_name, int production[][COLOURS], unsigned const int products)
+production_read(string file_name, int production[][COLOURS],
+        int production_batch[][COLOURS], unsigned const int products)
 {
     assert(production);
+    assert(production_batch);
 
     ifstream file;
 
@@ -82,6 +84,7 @@ production_read(string file_name, int production[][COLOURS], unsigned const int 
     }
 
     matrix_clear(production, products);
+    matrix_clear(production_batch, products);
 
     int a, b, n;
 
@@ -91,6 +94,7 @@ production_read(string file_name, int production[][COLOURS], unsigned const int 
 
         file >> n;
         production[a][b] += n;
+        production_batch[a][b]++;
 
         file >> a;
     }
@@ -103,7 +107,10 @@ string
 min_production(int production[][COLOURS], string catalogue[][COLOURS],
         unsigned const int products, unsigned const int colours)
 {
-    int sum[6] {0};
+    assert(production);
+    assert(catalogue);
+
+    int sum[products] {0};
 
     for(unsigned int i = 0; i < products; i++)
         for(unsigned int j = 0; j < colours; j++)
@@ -126,7 +133,35 @@ min_production(int production[][COLOURS], string catalogue[][COLOURS],
     return product_name + " with " + to_string(min_value) + " units.";
 }
 
-int main()
+string
+max_productionmean(int production[][COLOURS], int production_batch[][COLOURS],
+        string catalogue[][COLOURS], unsigned const int products,
+        unsigned const int colours)
+{
+    assert(catalogue);
+    assert(production);
+    assert(production_batch);
+
+    int maxmean = production[0][0]/production_batch[0][0];
+    int maxmean_x = 0;
+    int maxmean_y = 0;
+
+    for(unsigned int i = 0; i < products; i++) {
+        for(unsigned int j = 0; j < colours; j++) {
+            int mean = production[i][j]/production_batch[i][j];
+            if(maxmean < mean) {
+                maxmean = mean;
+                maxmean_x = i;
+                maxmean_y = j;
+            }
+        }
+    }
+
+    return catalogue[maxmean_x][maxmean_y] + " with a mean of "
+            + to_string(maxmean) + " units per batch.";
+}
+
+int main(void)
 {
     /* CATALOGUE */
     string products_and_colours[PRODUCTS + COLOURS];
@@ -145,14 +180,22 @@ int main()
 
     /* PRODUCTION DATA */
     int production[PRODUCTS][COLOURS];
+    int production_batch[PRODUCTS][COLOURS];
 
-    if (production_read(PRODUCTION_FILE, production, PRODUCTS)) {
+    if (production_read(PRODUCTION_FILE, production, production_batch, PRODUCTS)) {
         cout << "failed to read " << CATALOGUE_FILE << "." << endl;
         return ERROR;
     }
 
     /* DATA ANALYSIS */
     cout << "Product with the least units per lot: "
-         << min_production(production, catalogue, PRODUCTS, COLOURS) << endl;
+         << min_production(production, catalogue, PRODUCTS, COLOURS)
+         << endl;
+
+    cout << "Product with the most units per batch: "
+        << max_productionmean(production, production_batch, catalogue,
+                              PRODUCTS, COLOURS)
+        << endl;
+
     return 0;
 }
