@@ -103,22 +103,27 @@ string
 min_production(int production[][COLOURS], string catalogue[][COLOURS],
         unsigned const int products, unsigned const int colours)
 {
-    int min_x = 0;
-    int min_y = 0;
+    int sum[6] {0};
 
-    int min_value = production[min_x][min_y];
+    for(unsigned int i = 0; i < products; i++)
+        for(unsigned int j = 0; j < colours; j++)
+            sum[i] += production[i][j];
+
+    int min_value = sum[0];
+    int min_index = 0;
 
     for(unsigned int i = 0; i < products; i++) {
-        for(unsigned int j = 0; j < colours; j++) {
-            if (production[i][j] < min_value) {
-                min_value = production[i][j];
-                min_x = i;
-                min_y = j;
-            }
+        if(sum[i] < min_value) {
+            min_value = sum[i];
+            min_index = i;
         }
     }
 
-    return catalogue[min_x][min_y] + " with " + to_string(min_value) + " units.";
+    string product_name = catalogue[min_index][0];
+    int fromwhitespaceto = product_name.find(" ");
+    product_name.erase(fromwhitespaceto, product_name.length());
+
+    return product_name + " with " + to_string(min_value) + " units.";
 }
 
 int main()
