@@ -149,6 +149,5 @@ int main()
     /* DATA ANALYSIS */
     cout << "Product with the least units per lot: "
          << min_production(production, catalogue, PRODUCTS, COLOURS) << endl;
-
     return 0;
 }
