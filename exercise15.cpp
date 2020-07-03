@@ -2,20 +2,19 @@
 #include <cassert>
 #include <fstream>
 
-#define CATALOGUE_FILE "catalogue.data"
-#define PRODUCTION_FILE "production.data"
+#define CATALOGUE_FILE "catalogue.txt"
+#define PRODUCTION_FILE "production.txt"
 
-#define PRODUCTS    6
-#define COLOURS     3
-#define COLS        COLOURS
+#define PRODUCTS 6
+#define COLOURS 3
+#define COLS COLOURS
 
 #define ERROR -1
 //#define NDEBUG 1
 
 using namespace std;
 
-int
-catalogue_read(string file_name, string buff[], unsigned const int size)
+int catalogue_read(string file_name, string buff[], unsigned const int size)
 {
     assert(buff);
 
@@ -23,11 +22,13 @@ catalogue_read(string file_name, string buff[], unsigned const int size)
 
     file.open(file_name);
 
-    if(!file.is_open()) {
+    if (!file.is_open())
+    {
         return ERROR;
     }
 
-    for(unsigned int i = 0; i < size; i++) {
+    for (unsigned int i = 0; i < size; i++)
+    {
         file >> buff[i];
     }
 
@@ -35,44 +36,46 @@ catalogue_read(string file_name, string buff[], unsigned const int size)
     return 0;
 }
 
-int
-catalogue_create(string products_and_colours[], unsigned const int size,
-        unsigned const int products, unsigned const int colours,
-        string catalogue[][COLOURS])
+int catalogue_create(string products_and_colours[], unsigned const int size,
+                     unsigned const int products, unsigned const int colours,
+                     string catalogue[][COLOURS])
 {
     assert(catalogue);
     assert(products_and_colours);
 
-    if (size > (colours + products)) {
+    if (size > (colours + products))
+    {
         return ERROR;
     }
 
-    for(unsigned int i = 0; i < (products + colours); i++) {
-        if(i < products) {
-            for(unsigned int j = 0; j < colours; j++)
+    for (unsigned int i = 0; i < (products + colours); i++)
+    {
+        if (i < products)
+        {
+            for (unsigned int j = 0; j < colours; j++)
                 catalogue[i][j] = products_and_colours[i];
-        } else {
-            for(unsigned int j = 0; j < products; j++)
-                (catalogue[j][i-products] += " ") += products_and_colours[i];
+        }
+        else
+        {
+            for (unsigned int j = 0; j < products; j++)
+                (catalogue[j][i - products] += " ") += products_and_colours[i];
         }
     }
 
     return 0;
 }
 
-void
-matrix2D_clear(int matrix[][COLS], unsigned const int rows)
+void matrix2D_clear(int matrix[][COLS], unsigned const int rows)
 {
     assert(matrix);
 
-    for(unsigned int i = 0; i < rows; i++)
-        for(unsigned int j = 0; j < COLS; j++)
+    for (unsigned int i = 0; i < rows; i++)
+        for (unsigned int j = 0; j < COLS; j++)
             matrix[i][j] = 0;
 }
 
-int
-production_read(string file_name, int production[][COLOURS],
-        int production_batch[][COLOURS], unsigned const int products)
+int production_read(string file_name, int production[][COLOURS],
+                    int production_batch[][COLOURS], unsigned const int products)
 {
     assert(production);
     assert(production_batch);
@@ -81,7 +84,8 @@ production_read(string file_name, int production[][COLOURS],
 
     file.open(file_name);
 
-    if(!file.is_open()) {
+    if (!file.is_open())
+    {
         return ERROR;
     }
 
@@ -91,11 +95,12 @@ production_read(string file_name, int production[][COLOURS],
     int a, b, n;
 
     file >> a;
-    while(!file.eof()) {
-        if(!(file >> b))
+    while (!file.eof())
+    {
+        if (!(file >> b))
             break;
 
-        if(!(file >> n))
+        if (!(file >> n))
             break;
 
         production[a][b] += n;
@@ -108,24 +113,25 @@ production_read(string file_name, int production[][COLOURS],
     return 0;
 }
 
-string
-min_production(int production[][COLOURS], string catalogue[][COLOURS],
-        unsigned const int products, unsigned const int colours)
+string min_production(int production[][COLOURS], string catalogue[][COLOURS],
+                      unsigned const int products, unsigned const int colours)
 {
     assert(production);
     assert(catalogue);
 
-    int sum[products] {0};
+    int sum[products]{0};
 
-    for(unsigned int i = 0; i < products; i++)
-        for(unsigned int j = 0; j < colours; j++)
+    for (unsigned int i = 0; i < products; i++)
+        for (unsigned int j = 0; j < colours; j++)
             sum[i] += production[i][j];
 
     int min_value = sum[0];
     int min_index = 0;
 
-    for(unsigned int i = 0; i < products; i++) {
-        if(sum[i] < min_value) {
+    for (unsigned int i = 0; i < products; i++)
+    {
+        if (sum[i] < min_value)
+        {
             min_value = sum[i];
             min_index = i;
         }
@@ -138,23 +144,25 @@ min_production(int production[][COLOURS], string catalogue[][COLOURS],
     return product_name + " with " + to_string(min_value) + " units.";
 }
 
-string
-max_productionmean(int production[][COLOURS], int production_batch[][COLOURS],
-        string catalogue[][COLOURS], unsigned const int products,
-        unsigned const int colours)
+string max_productionmean(int production[][COLOURS],
+                          int production_batch[][COLOURS], string catalogue[][COLOURS],
+                          unsigned const int products, unsigned const int colours)
 {
     assert(catalogue);
     assert(production);
     assert(production_batch);
 
-    int maxmean = production[0][0]/production_batch[0][0];
+    int maxmean = production[0][0] / production_batch[0][0];
     int maxmean_x = 0;
     int maxmean_y = 0;
 
-    for(unsigned int i = 0; i < products; i++) {
-        for(unsigned int j = 0; j < colours; j++) {
-            int mean = production[i][j]/production_batch[i][j];
-            if(maxmean < mean) {
+    for (unsigned int i = 0; i < products; i++)
+    {
+        for (unsigned int j = 0; j < colours; j++)
+        {
+            int mean = production[i][j] / production_batch[i][j];
+            if (maxmean < mean)
+            {
                 maxmean = mean;
                 maxmean_x = i;
                 maxmean_y = j;
@@ -162,8 +170,7 @@ max_productionmean(int production[][COLOURS], int production_batch[][COLOURS],
         }
     }
 
-    return catalogue[maxmean_x][maxmean_y] + " with a mean of "
-            + to_string(maxmean) + " units per batch.";
+    return catalogue[maxmean_x][maxmean_y] + " with a mean of " + to_string(maxmean) + " units per batch.";
 }
 
 int main(void)
@@ -171,14 +178,16 @@ int main(void)
     /* CATALOGUE */
     string products_and_colours[PRODUCTS + COLOURS];
 
-    if (catalogue_read(CATALOGUE_FILE, products_and_colours, PRODUCTS + COLOURS)) {
+    if (catalogue_read(CATALOGUE_FILE, products_and_colours, PRODUCTS + COLOURS))
+    {
         cout << "failed to read " << CATALOGUE_FILE << "." << endl;
         return ERROR;
     }
 
     string catalogue[PRODUCTS][COLOURS];
 
-    if (catalogue_create(products_and_colours, PRODUCTS + COLOURS, PRODUCTS, COLOURS, catalogue)) {
+    if (catalogue_create(products_and_colours, PRODUCTS + COLOURS, PRODUCTS, COLOURS, catalogue))
+    {
         cout << "failed to create catalogue." << endl;
         return ERROR;
     }
@@ -187,7 +196,8 @@ int main(void)
     int production[PRODUCTS][COLOURS];
     int production_batch[PRODUCTS][COLOURS];
 
-    if (production_read(PRODUCTION_FILE, production, production_batch, PRODUCTS)) {
+    if (production_read(PRODUCTION_FILE, production, production_batch, PRODUCTS))
+    {
         cout << "failed to read " << CATALOGUE_FILE << "." << endl;
         return ERROR;
     }
@@ -198,9 +208,9 @@ int main(void)
          << endl;
 
     cout << "Product with the most units per batch: "
-        << max_productionmean(production, production_batch, catalogue,
-                              PRODUCTS, COLOURS)
-        << endl;
+         << max_productionmean(production, production_batch, catalogue,
+                               PRODUCTS, COLOURS)
+         << endl;
 
     return 0;
 }
