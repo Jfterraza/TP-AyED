@@ -61,8 +61,10 @@ catalogue_create(string products_and_colours[], unsigned const int size,
 }
 
 void
-matrix_clear(int matrix[][COLS], unsigned const int rows)
+matrix2D_clear(int matrix[][COLS], unsigned const int rows)
 {
+    assert(matrix);
+
     for(unsigned int i = 0; i < rows; i++)
         for(unsigned int j = 0; j < COLS; j++)
             matrix[i][j] = 0;
@@ -83,16 +85,19 @@ production_read(string file_name, int production[][COLOURS],
         return ERROR;
     }
 
-    matrix_clear(production, products);
-    matrix_clear(production_batch, products);
+    matrix2D_clear(production, products);
+    matrix2D_clear(production_batch, products);
 
     int a, b, n;
 
     file >> a;
     while(!file.eof()) {
-        file >> b;
+        if(!(file >> b))
+            break;
 
-        file >> n;
+        if(!(file >> n))
+            break;
+
         production[a][b] += n;
         production_batch[a][b]++;
 
