@@ -173,6 +173,36 @@ string max_productionmean(int production[][COLOURS],
     return catalogue[maxmean_x][maxmean_y] + " with a mean of " + to_string(maxmean) + " units per batch.";
 }
 
+string max_production(int production[][COLOURS],
+                      int production_batch[][COLOURS], string catalogue[][COLOURS],
+                      unsigned const int products, unsigned const int colours)
+{
+    assert(catalogue);
+    assert(production);
+    assert(production_batch);
+
+    int maxp = production[0][0];
+    int maxp_x = 0;
+    int maxp_y = 0;
+
+    for (unsigned int i = 0; i < products; i++)
+    {
+        for (unsigned int j = 0; j < colours; j++)
+        {
+            int halfway = production[i][j];
+            if (maxp < halfway)
+            {
+                maxp = halfway;
+                maxp_x = i;
+                maxp_y = j;
+            }
+        }
+    }
+
+    return catalogue[maxp_x][maxp_y] + " with " + to_string(maxp) + " units.";
+}
+
+
 int main(void)
 {
     /* CATALOGUE */
@@ -203,6 +233,10 @@ int main(void)
     }
 
     /* DATA ANALYSIS */
+    cout << "Product with the Most units per lot:" 
+         << max_production(production, production_batch, catalogue, 
+                            PRODUCTS, COLOURS)
+         << endl;                     
     cout << "Product with the least units per lot: "
          << min_production(production, catalogue, PRODUCTS, COLOURS)
          << endl;
