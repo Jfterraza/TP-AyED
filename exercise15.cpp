@@ -233,10 +233,10 @@ int main(void)
     }
 
     /* DATA ANALYSIS */
-    cout << "Product with the Most units per lot:" 
-         << max_production(production, production_batch, catalogue, 
+    cout << "Product with the most units per lot: "
+         << max_production(production, production_batch, catalogue,
                             PRODUCTS, COLOURS)
-         << endl;                     
+         << endl;
     cout << "Product with the least units per lot: "
          << min_production(production, catalogue, PRODUCTS, COLOURS)
          << endl;
