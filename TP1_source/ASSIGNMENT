@@ -1,0 +1,23 @@
+Una empresa fabrica 6 productos diferentes y cada uno de ellos puede terminarse en 3 colores
+distintos. Se Tienen dos archivos de texto. El primero tiene los nombres de los productos,
+seguido inmediatamente por los nombres de los colores. El otro archivo contiene información
+de los lotes de producción terminados en la semana. Por cada lote de producción se guarda una
+línea con: el código del producto (entero con valores entre 0 y 5), el código del color (entero
+entre 0 y 2) y la cantidad producida. Dentro de la línea, los valores se separan mediante un
+tabulador.
+
+Se pide armar un programa que a partir de la información en los archivos informe:
+
+1. De cual combinación producto-color se produjo la mayor cantidad de unidades. Informar
+usando los nombres, no los códigos, y la cantidad producida para esa combinación.
+
+2. Nombre del producto del cual se produjo la menor cantidad de unidades, y cuantas fueron.
+
+3. Que combinación producto-color tuvo el mayor promedio de unidades por lote. Informar
+usando los nombres y el promedio correspondiente.
+
+Nota: Usando los archivos "production.txt" y "catalogue.txt" los resultados son:
+
+1. cantimplora en color azul con 588 unidades producidas
+2. mochila con 705 unidades
+3. cantimplora en color verde con un promedio de 108 unidades por lote
