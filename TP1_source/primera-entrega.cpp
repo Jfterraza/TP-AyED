@@ -5,7 +5,7 @@
 #define CATALOGUE_FILE "catalogue.txt"
 #define PRODUCTION_FILE "production.txt"
 
-/* MACROS */
+/* MACROS DEFINIDAS SEGÚN CONSIGNA */
 #define PRODUCTS 6
 #define COLOURS 3
 
@@ -35,17 +35,17 @@ int main(void)
 
     int production[PRODUCTS][COLOURS];
 
-    /* production[PRODUCTS][COLOURS] almacena en una matriz de ints la cantidad
-     * producida de cada producto de cada color. Este enfoque nos permite,
-     * independientemente del orden en que los colores aparezcan, poder
-     * interpretar las cantidades producidas.*/
+    /* production[PRODUCTS][COLOURS] almacena en una matriz de ints las 
+     * cantidades producidas de cada producto en cada color. Este enfoque nos 
+     * permite,independientemente del orden en que los colores aparezcan en el 
+     * archivo, poder interpretar la producción.*/
 
     int production_batch[PRODUCTS][COLOURS];
 
     /* production_batch[PRODUCTS][COLOURS] almacena en una matriz de ints la
-     * cantidad lotes de producción de cada producto de cada color. Es decir,
-     * por cada ocurrencia de "cantidad producida" de un producto-color, se
-     * incrementa en uno la misma significando los lotes.
+     * cantidad de lotes de producción para cada combinación producto-color. 
+     * Es decir, por cada ocurrencia de "cantidad producida" de un combinación,
+     * se incrementa en uno la misma significando los lotes.
      * ************************************************************************/
 
     return 0;
