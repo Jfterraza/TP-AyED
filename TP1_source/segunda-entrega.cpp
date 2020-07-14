@@ -1,5 +1,8 @@
-/* See LICENSE for license details. */
-//TP1: ejercicio n° 15 de la guia 4.
+/* Trabajo Práctico 1
+ * Algoritmos y Estructuras de Datos (K1003), 2020.
+ *
+ * Véase el archivo ASSIGNMENT para leer la consigna del mismo
+ * Véase el archivo ../LICENSE para detalles de uso y licencia */
 
 #include <iostream>
 #include <cassert>
