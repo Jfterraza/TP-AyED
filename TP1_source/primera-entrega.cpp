@@ -1,3 +1,8 @@
+/* Fuentebuena Guardon <tfuentebuena@est.frba.utn.edu.ar>
+ * Nicolás Savinelli <rsavinelli@est.frba.utn.edu.ar>
+ * Francisco Terraza <jterraza@est.frba.utn.edu.ar> */
+
+
 #include <iostream>
 #include <fstream>
 
